@@ -1,5 +1,5 @@
 # ZenAgent Suite
-Zendesk User Management for Non Admins
+Zendesk User Management Made (kind of) Simpler!
 
 ## What is it?
 A terminal program that bundles a number of agent account management processes.
@@ -29,17 +29,17 @@ The user passes in a csv with the email address and agent field options.
 
 ### Usage
 
-Visit the [User API Reference in Zendesk's Developer Pages(https://developer.zendesk.com/rest_api/docs/core/users) for usage tips and user field syntax.
+Make Sure to Setup your system to use the [Zendesk Ruby Client](https://github.com/zendesk/zendesk_api_client_rb).
 
-There are 2 transformations of the initial csv that generates a user email array, and a user_id array that are passed in as arguments as needed.
+Visit the [User API Reference in [Zendesk's Developer Pages](https://developer.zendesk.com/rest_api/docs/core/users) for usage tips and user field syntax.
+
+It's super important that your CSV file is formatted accurately. It will be used to extract a user_emails array that is then used to run a query for user_ids. The resulting user_ids are pushed as a new "column" into the csv, but also kept as a separate array to be used in several of the other functions. 
 
 1. I store my ZD username and API token locally in .bash_profile. 
 2. Prepare a CSV with the user emails in the first column, and any user fields required. Make sure to add a title row, as the first command will remove this row. 
-2. Set the custom role ID in the `change_role` method.
+3. Define your config variables (`filename`, `custom_role_id`, `password`, `new_default_group_id`, etc. at the the top of the file.
 3. Adjust the indices and custom field names in the `add_user_fields` method.
-4. Set the user passowrd in the `set_password!` method. I recommend not publishing the password in any persisted records and giving the password to any trainers or leads privately to avoid any potential security breaches.
-5. Enter any group_ids in the `add_groups` method.
-6. Change the path and filename of the csv you created in the `user_fields = CSV.read("./filename.csv")` command.
+4. I recommend not publishing the password in any persisted records and giving the password to any trainers or leads privately to avoid any potential security breaches.
 
 #### Optional Settings
 + You may add or remove any number of user fields or group memberships. Just adjust your variables and indices!

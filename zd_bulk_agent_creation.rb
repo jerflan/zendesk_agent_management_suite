@@ -3,6 +3,13 @@
 require 'zendesk_api'
 require 'csv'
 
+filename = "./filename.csv"
+custom_role_id = 1234567
+password = "YoUr#1KrazyPa$$word"
+new_default_group_id = 2345678
+group2_id = 3456789
+
+
 
 
 ####################################################
@@ -66,8 +73,7 @@ end
 ########## CHANGE TO A CUSTOM AGENT ROLE ###########
 ####################################################
 
-def change_role(user_ids, client)
-  custom_role_id = 1234567
+def change_role(user_ids, custom_role_id, client)
   user_ids.each do |user_id|
     client.users.update!(id:user_id, custom_role_id:custom_role_id)
     puts "\n"
@@ -115,8 +121,7 @@ end
 ################### SET PASSWORD ###################
 ####################################################
 
-def set_password!(user_ids, client)
-  password = "YoUr#1KrazyPa$$word"
+def set_password!(user_ids, password, client)
   user_ids.each do |user_id|
     client.users.find(id:user_id).set_password!(password: password)
     puts "\n"
@@ -150,9 +155,7 @@ end
 ####### ADD GROUPS AND CHANGE DEFAULT GROUP ########
 ####################################################
 
-def add_groups(user_ids, client)
-  new_default_group_id = 2345678
-  group2_id = 2345678
+def add_groups(user_ids, new_default_group_id, group2_id, client)
   user_ids.each do |user_id|
     client.group_memberships.create_many!([{user_id:user_id,  group_id:new_default_group_id, default:true},{user_id:user_id, group_id:group2_id}])
     puts "\n"
@@ -183,14 +186,14 @@ end
 
 
 
-user_fields = CSV.read("./filename.csv")
+user_fields = CSV.read(filename)
 user_fields.shift
 user_emails = extract_user_emails(user_fields, client)
 user_ids = get_user_ids(client, user_emails)
 combine(user_fields, user_ids)
-change_role(user_ids, client)
+change_role(user_ids, custom_role_id, client)
 default_gm_ids = get_default_group_membership_id(user_ids, client)
-add_groups(user_ids, client)
+add_groups(user_ids, new_default_group_id, group2_id, client)
 remove_original_group(default_gm_ids, client)
 add_user_fields(user_fields, client)
-set_password!(user_ids, client)
+set_password!(user_ids, password, client)
