@@ -39,7 +39,7 @@ Visit the [User API Reference in Zendesk's Developer Pages](https://developer.ze
 _**It's super important that your CSV file is formatted accurately. It will be used to extract a `user_emails` array that is then used to run a query for `user_ids`. The resulting `user_ids` are pushed as a new "column" into the csv, but also kept as a separate array to be used in several of the other functions. Check out the [Sample CSV](/sample.csv).**_
 
 3. Define your config variables (`filename`, `custom_role_id`, `password`, `new_default_group_id`, etc. at the the top of the file.
-_**Make sure you have to correct path for the csv file if it's not in the same directory as your program file.**_
+_**Make sure you enter the correct path for the csv file when defining `filename` if it's not in the same directory as your program file.**_
     
 
 4. I recommend not publishing the password in any persisted records and giving the password to any trainers or leads privately to avoid any potential security breaches.
