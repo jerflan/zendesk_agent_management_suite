@@ -31,15 +31,24 @@ The user passes in a csv with the email address and agent field options.
 
 Make Sure to Setup your system to use the [Zendesk Ruby Client](https://github.com/zendesk/zendesk_api_client_rb).
 
-Visit the [User API Reference in [Zendesk's Developer Pages](https://developer.zendesk.com/rest_api/docs/core/users) for usage tips and user field syntax.
+Visit the [User API Reference in Zendesk's Developer Pages](https://developer.zendesk.com/rest_api/docs/core/users) for usage tips and user field syntax.
 
-It's super important that your CSV file is formatted accurately. It will be used to extract a user_emails array that is then used to run a query for user_ids. The resulting user_ids are pushed as a new "column" into the csv, but also kept as a separate array to be used in several of the other functions. 
+1. I store my ZD username and API token locally in .bash_profile as `export ZD_USERNAME="myactualemail@punked.com"` and `export ZD_TOKEN="REALLYLONGSTRINGOFCHARACTERS"`, respectively. 
 
-1. I store my ZD username and API token locally in .bash_profile. 
-2. Prepare a CSV with the user emails in the first column, and any user fields required. Make sure to add a title row, as the first command will remove this row. 
+2. Prepare a CSV with the user emails in the first column, and any user fields required. Make sure to add a title row, as the first command will remove this row. Maybe prepare a version with only 1 or 2 rows at first to make sure the program does what you want. 
+_**It's super important that your CSV file is formatted accurately. It will be used to extract a `user_emails` array that is then used to run a query for `user_ids`. The resulting `user_ids` are pushed as a new "column" into the csv, but also kept as a separate array to be used in several of the other functions. Check out the [Sample CSV](zendesk_agent_management_suite/sample.csv).**_
+
 3. Define your config variables (`filename`, `custom_role_id`, `password`, `new_default_group_id`, etc. at the the top of the file.
-3. Adjust the indices and custom field names in the `add_user_fields` method.
+_**Make sure you have to correct path for the csv file if it's not in the same directory as your program file.**_
+    
+
 4. I recommend not publishing the password in any persisted records and giving the password to any trainers or leads privately to avoid any potential security breaches.
+
+5. Adjust the indices and custom field names in the `add_user_fields` method.
+
+6. Check your work to avoid annoying manual fixes!
+
+7. Call the program file `ruby zd_bulk_agent_creation.rb` from your command line. The program will take a few minutes to complete. While the confirmation messages for each step add extra time, I've found they will help you debug much faster if you do encounter an error. 
 
 #### Optional Settings
 + You may add or remove any number of user fields or group memberships. Just adjust your variables and indices!
