@@ -3,6 +3,7 @@
 require 'zendesk_api'
 require 'csv'
 
+subdomain = "your_companys_zendesk_subdomain"
 filename = "./filename.csv"
 custom_role_id = 1234567
 password = "YoUr#1KrazyPa$$word"
@@ -17,7 +18,7 @@ group2_id = 3456789
 
 client = ZendeskAPI::Client.new do |config|
 
-  config.url = "https://[subdomain].zendesk.com/api/v2"
+  config.url = "https://#{subdomain}.zendesk.com/api/v2"
   config.username = ENV["ZD_USERNAME"]
   config.token = ENV["ZD_TOKEN"]
   # stored locally in .bash_profile
