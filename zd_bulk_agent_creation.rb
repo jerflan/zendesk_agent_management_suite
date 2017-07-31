@@ -42,13 +42,34 @@ def extract_user_emails(user_fields, client)
   user_emails
 end
 
+def find_or_create_users(client, user_emails)
+  user_emails.each do |email|
+    user_query = client.users.search(query:"#{email}")
+    if (user_query.count == 0)
+      client.users.create!(name:"#{email}", email:"#{email}")
+      puts "\n"
+      puts "-" * 40
+      puts "New user created for #{email}"
+      puts "-" * 40
+      puts "\n"
+    else
+      puts "\n"
+      puts "-" * 40
+      puts "Existing user found for #{email}"
+      puts "-" * 40
+      puts "\n"
+    end
+  end
+end
+
 def get_user_ids(client, user_emails)
   user_ids = []
   user_emails.each do |email|
-    user_ids.push(client.users.search(query:"#{email}").map { |user| user.id})
+    user_query = client.users.search(query:"#{email}")
+    user_ids.push(user_query.map { |user| user.id})
     puts "\n"
     puts "-" * 40
-    puts "#{email} found!"
+    puts "user_id for #{email} found!"
     puts "-" * 40
     puts "\n"
   end
@@ -189,6 +210,7 @@ end
 user_fields = CSV.read(filename)
 user_fields.shift
 user_emails = extract_user_emails(user_fields, client)
+find_or_create_users(client, user_emails)
 user_ids = get_user_ids(client, user_emails)
 combine(user_fields, user_ids)
 change_role(user_ids, custom_role_id, client)
