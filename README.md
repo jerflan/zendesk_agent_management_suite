@@ -57,7 +57,7 @@ _**Make sure you enter the correct path for the csv file when defining `filename
 
 
 #### Limitations
-+ Only works for existing users (planning to fix this in V2 by conditioning creation if user is not found)
++ ~~Only works for existing users (planning to fix this in V2 by conditioning creation if user is not found)~~ (fixed in recent push)
 + If run and an error occurs due to a missing user, previous changes will not be reverted (planning to fix this in V2)
 
 #### V2 Plans
