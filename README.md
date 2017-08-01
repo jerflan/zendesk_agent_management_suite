@@ -56,9 +56,84 @@ _**Make sure you enter the correct path for the csv file when defining `filename
     * `get_user_ids` requires `extract_user_emails`
 
 
+### [Change to End User/Suspend](/change_to_end_user.rb)
+
+Use this file to:
+
++ Revert changes if the bulk creation file raises an error
++ Change a csv of users to end_user
++ Remove the value of any and all `user_fields`
++ Suspend users
+
+Make sure to remove the `user_fields` hash if you don't want to clear out the values
+
+```
+def change_role_to_end_user(client, user_ids)
+  user_ids.each do |uid|
+    client.users.update!(
+      id:uid,
+      role:"end-user",
+      # optional removal of user field values
+      user_fields:{
+        customer_user_field_1:"",
+        customer_user_field_2:""
+        }
+    )
+    puts"\n"
+    puts "-" * 40
+    puts "#{uid} changed to End User and user fields cleared."
+    puts "-" * 40
+    puts"\n"
+  end
+end
+```
+
+Make sure to comment out the last line in the method calls if you do not wish to suspend users
+
+```
+user_fields = CSV.read(filename)
+user_fields.shift
+user_emails = extract_user_emails(user_fields, client)
+find_or_create_users(client, user_emails)
+user_ids = get_user_ids(client, user_emails)
+change_role_to_end_user(client, user_ids)
+# comment out the line below if you don't want to suspend users in the csv
+# suspend_user(client, user_ids)
+```
+
+
+
+
+#### Errors
+In the unlikely event an error occurs when running [zd_bulk_agent_creation.rb](/zd_bulk_agent_creation.rb), the program will fail, but will not automatically revert changes. Before running a second time, please run [change_to_end_user.rb](/change_to_end_user.rb) with the same csv and config variable settings to:
+1. Reset all user accounts to an `end_user` role (and therefore destroy any existing group memberships and associated default settings.)
+2. Remove any `user_field` values (optional)
+
+
 #### Limitations
-+ ~~Only works for existing users (planning to fix this in V2 by conditioning creation if user is not found)~~ (fixed in recent push)
-+ If run and an error occurs due to a missing user, previous changes will not be reverted (planning to fix this in V2)
++ ~~Only works for existing users (planning to fix this in V2 by conditioning creation if user is not found)~~ _Added Method to Create a User if email address is not found_
+```
+def find_or_create_users(client, user_emails)
+  user_emails.each do |email|
+    user_query = client.users.search(query:"#{email}")
+    if (user_query.count == 0)
+      client.users.create!(name:"#{email}", email:"#{email}")
+      puts "\n"
+      puts "-" * 40
+      puts "New user created for #{email}"
+      puts "-" * 40
+      puts "\n"
+    else
+      puts "\n"
+      puts "-" * 40
+      puts "Existing user found for #{email}"
+      puts "-" * 40
+      puts "\n"
+    end
+  end
+end
+```
++ ~~If run and an error occurs due to a missing user, previous changes will not be reverted (planning to fix this in V2)~~ _Added [change_to_end_user.rb](/change_to_end_user.rb) to revert changes if an error occurs_
 
 #### V2 Plans
 + Convert to a Zendesk app that can be used by assigned roles
